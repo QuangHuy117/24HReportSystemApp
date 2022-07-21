@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:capstone_project/models/sign_up_page_model.dart';
 import 'package:capstone_project/views/sign_up_page_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,7 +104,10 @@ class SignUpPagePresenter {
         codeSent: (String verificationId, int? resendingToken) async {
           _signUpPageModel.verificationReceived = verificationId;
           _signUpPageModel.otpPhone = true;
+          _signUpPageModel.countdownTimer!.cancel();
+          _signUpPageModel.myDuration = const Duration(seconds: 60);
           _signUpPageView.refreshData(_signUpPageModel);
+          startTimer();
         },
         timeout: const Duration(seconds: 60),
         codeAutoRetrievalTimeout: (String verificationId) async {});
@@ -141,5 +146,21 @@ class SignUpPagePresenter {
             _signUpPageView.refreshData(_signUpPageModel);
           });
     }
+  }
+
+  void startTimer() {
+    _signUpPageModel.countdownTimer =
+        Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
+  }
+
+  void setCountDown() {
+    int reduceSecondsBy = 1;
+    final seconds = _signUpPageModel.myDuration.inSeconds - reduceSecondsBy;
+    if (seconds < 0) {
+      _signUpPageModel.countdownTimer!.cancel();
+    } else {
+      _signUpPageModel.myDuration = Duration(seconds: seconds);
+    }
+    _signUpPageView.refreshData(_signUpPageModel);
   }
 }

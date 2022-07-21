@@ -49,9 +49,17 @@ class OtpVerifyForm extends StatelessWidget {
         SizedBox(
           height: 0.01.sh,
         ),
-        Text(
-          signUpPageModel.phone.text,
-          style: TextStyle(fontSize: 16.sp),
+        Row(
+          children: [
+            Text(
+              signUpPageModel.phone.text,
+              style: TextStyle(fontSize: 16.sp),
+            ),
+            Text(
+              signUpPageModel.formatTime(signUpPageModel.myDuration),
+              style: TextStyle(fontSize: 16.sp, color: Colors.blue),
+            ),
+          ],
         ),
         SizedBox(
           height: 0.02.sh,
